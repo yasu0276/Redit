@@ -91,12 +91,22 @@ button {
   margin-right: 5px;
 }
 
+/* カーソルの色とアニメーション */
+@keyframes blink-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
 textarea {
   width: 100vw;
   height: 100vh;
-  padding: 10px;
-  box-sizing: border-box;
   font-size: 16px;
+  background-color: black;   /* 背景色を黒に */
+  color: white;              /* 文字色を白に */
+  border: none;              /* 境界線をなしに */
+  padding: 10px;             /* パディングを追加して文字が端に寄らないように */
+  box-sizing: border-box;    /* パディングを含めたサイズを適用 */
 }
 
 @media (prefers-color-scheme: dark) {

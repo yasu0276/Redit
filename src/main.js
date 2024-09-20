@@ -1,7 +1,17 @@
 // Tauri の invoke 関数を使用して Rust コマンドを呼び出します
 const { invoke } = window.__TAURI__.tauri;
+let currentFilePath = null;  // 保存されたファイルパスを保持する変数
 
 async function openFile() {
+  const path = await window.__TAURI__.dialog.open();
+  if (path) {
+    const content = await invoke("open_file", { path });
+    document.getElementById("editor").value = content;
+    currentFilePath = path;  // ファイルを開いたらパスを記憶
+  }
+}
+
+async function saveFile() {
   const content = document.getElementById("editor").value;
 
   // すでにファイルが保存されている場合は上書き保存
@@ -14,14 +24,6 @@ async function openFile() {
       currentFilePath = path;  // ファイルパスを記憶
       await invoke("save_file", { path, content });
     }
-  }
-}
-
-async function saveFile() {
-  const content = document.getElementById("editor").value;
-  const path = await window.__TAURI__.dialog.save(); // ファイル保存ダイアログを表示
-  if (path) {
-    await invoke("save_file", { path, content });
   }
 }
 
