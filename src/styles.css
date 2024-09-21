@@ -91,22 +91,23 @@ button {
   margin-right: 5px;
 }
 
-/* カーソルの色とアニメーション */
-@keyframes blink-caret {
-  50% {
-    opacity: 0;
-  }
+.editor-dragging {
+  pointer-events: none;
 }
 
 textarea {
   width: 100vw;
   height: 100vh;
-  font-size: 16px;
-  background-color: black;   /* 背景色を黒に */
-  color: white;              /* 文字色を白に */
-  border: none;              /* 境界線をなしに */
-  padding: 10px;             /* パディングを追加して文字が端に寄らないように */
-  box-sizing: border-box;    /* パディングを含めたサイズを適用 */
+  font-size: 20px;
+  padding: 1%;
+  background-color: #2f2f2f;   /* 背景色を黒に */
+  color: #f6f6f6;              /* 文字色を白に */
+  border: none;                  /* 境界線をなしに */
+  box-sizing: border-box;        /* パディングを含めたサイズを適用 */
+  overflow: auto;                /* スクロールが必要な場合自動で処理 */
+  white-space: pre-wrap;         /* テキストの折り返し処理を指定 */
+  cursor: text;                  /* テキスト入力エリアのデフォルト */
+  outline: none;                 /* フォーカスリングを非表示にする */
 }
 
 @media (prefers-color-scheme: dark) {
