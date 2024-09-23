@@ -52,18 +52,32 @@ jobs:
         path: src-tauri/target/release/bundle/
 
   # GitHubリリースへの自動デプロイ
-  release:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download Artifacts
+    - name: Download Artifacts for Linux
       uses: actions/download-artifact@v3
       with:
-        name: tauri-${{ matrix.os }}
+        name: tauri-ubuntu-latest
+        path: ./artifacts
+
+    - name: Download Artifacts for macOS
+      uses: actions/download-artifact@v3
+      with:
+        name: tauri-macos-latest
+        path: ./artifacts
+
+    - name: Download Artifacts for Windows
+      uses: actions/download-artifact@v3
+      with:
+        name: tauri-windows-latest
+        path: ./artifacts
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        files: src-tauri/target/release/bundle/*
+        files: ./artifacts/*
+        tag: ${{ github.ref }} # リリースタグを設定
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
