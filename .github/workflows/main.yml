@@ -42,7 +42,7 @@ jobs:
 
     # アプリのビルド
     - name: Build Tauri app
-      run: cargo tauri build --release
+      run: cargo tauri build
 
     # 各プラットフォーム向けにバンドルされるアーティファクトを保存
     - name: Upload Artifacts

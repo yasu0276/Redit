@@ -1,4 +1,4 @@
-# Dev_Editor
+# Redit
 
 ## 環境構築
 
