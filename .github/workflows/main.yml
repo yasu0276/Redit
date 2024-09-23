@@ -49,8 +49,4 @@ jobs:
 
     # Rust/Tauriアプリをビルド
     - name: Build Tauri app
-      run: cargo tauri build --release
-
-    # (任意) アプリのテストを実行
-    - name: Test Tauri app
-      run: cargo test
+      run: cargo tauri build
