@@ -91,11 +91,43 @@ button {
   margin-right: 5px;
 }
 
+.half-width-space {
+  background-color: rgba(255, 255, 0, 0.2); /* 半角空白の色 */
+  display: inline-block; /* 行内要素として表示 */
+  height: 1.5em; /* 行の高さに合わせる */
+}
+
+.full-width-space {
+  background-color: rgba(0, 255, 255, 0.2); /* 全角空白の色 */
+  display: inline-block; /* 行内要素として表示 */
+  height: 1.5em; /* 行の高さに合わせる */
+}
+
+.tab {
+  background-color: rgba(255, 0, 255, 0.2); /* タブの色 */
+  display: inline-block; /* 行内要素として表示 */
+  height: 1.5em; /* 行の高さに合わせる */
+}
+
+#line-numbers {
+  padding: 1%;          /* 左右の余白を設定 */
+  user-select: none;    /* 行番号の選択を無効にする */
+  line-height: 1.5;     /* 行間を設定 */
+  font-size: 20px;      /* フォントサイズを設定 */
+  text-align: center;   /* 中央揃え */
+}
+
+.line-number {
+  display: block;
+  height: 1.5em; /* 行の高さに合わせる */
+  color: gray; /* 行番号の色 */
+}
+
 .editor-dragging {
   pointer-events: none;
 }
 
-textarea {
+.editor {
   width: 100vw;
   height: 100vh;
   font-size: 20px;
@@ -108,6 +140,7 @@ textarea {
   white-space: pre-wrap;         /* テキストの折り返し処理を指定 */
   cursor: text;                  /* テキスト入力エリアのデフォルト */
   outline: none;                 /* フォーカスリングを非表示にする */
+  line-height: 1.5;              /* 行間を広げる */
 }
 
 @media (prefers-color-scheme: dark) {

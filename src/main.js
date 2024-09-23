@@ -8,6 +8,52 @@ window.onload = () => {
   document.getElementById("editor").focus();
 };
 
+function visualizeSpaces(text) {
+  return text
+      .replace(/ /g, '<span class="half-width-space"> </span>')
+      .replace(/　/g, '<span class="full-width-space">　</span>')
+      .replace(/\t/g, '<span class="tab">→</span>'); // タブを矢印で可視化
+}
+
+function saveCaretPosition(context) {
+  let selection = window.getSelection();
+  let range = selection.getRangeAt(0);
+  let preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(context);
+  preCaretRange.setEnd(range.endContainer, range.endOffset);
+  return preCaretRange.toString().length; // カーソル位置を文字数として保存
+}
+
+function restoreCaretPosition(context, position) {
+  let nodeStack = [context], node, charCount = 0, foundStart = false, stop = false;
+  let range = document.createRange();
+  let sel = window.getSelection();
+
+  range.setStart(context, 0);
+  range.collapse(true);
+
+  while (!stop && (node = nodeStack.pop())) {
+      if (node.nodeType === 3) { // テキストノード
+          let nextCharCount = charCount + node.length;
+          if (!foundStart && position <= nextCharCount) {
+              range.setStart(node, position - charCount);
+              range.setEnd(node, position - charCount);
+              foundStart = true;
+              stop = true;
+          }
+          charCount = nextCharCount;
+      } else {
+          let i = node.childNodes.length;
+          while (i--) {
+              nodeStack.push(node.childNodes[i]);
+          }
+      }
+  }
+
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
 // ドラッグイベント検知
 editor.addEventListener('dragover', (event) => {
   event.preventDefault(); // デフォルトの挙動を防ぐ
@@ -27,7 +73,6 @@ tauri.event.listen("tauri://file-drop", (event) => {
   requestAnimationFrame(() => {
     // ドロップ後に描画更新
     editor.style.cursor = 'text'; // 通常のカーソルに戻す
-    editor.setSelectionRange(0, 0);
   });
 });
 
@@ -35,7 +80,8 @@ tauri.event.listen("tauri://file-drop", (event) => {
 async function openFile(path) {
   const content = await invoke("open_file", { path });
   const editor = document.getElementById("editor");
-  editor.value = content;
+  const visualizedText = visualizeSpaces(content);
+  editor.innerHTML = visualizedText;
   currentFilePath = path;  // ファイルを開いたらパスを記憶
 }
 
@@ -77,3 +123,46 @@ document.addEventListener("keydown", (event) => {
     openFileDialog(); // ファイルを開く関数を呼び出す
   }
 });
+
+function placeCaretAtEnd(el) {
+  el.focus();
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function updateLineNumbers() {
+  const editor = document.getElementById('editor');
+  const lineNumbers = document.getElementById('line-numbers');
+  const text = editor.innerText; // エディターのテキストを取得
+  const lines = text.split('\n'); // 改行で分割
+
+  // 文字数がある行をカウント
+  let lineCount = lines.length;
+  if (text.length > 0 && text[text.length - 1] !== '\n') {
+    lineCount++; // 最後に改行がない場合、行数を1つ増やす
+  }
+
+  lineNumbers.innerHTML = ''; // 行番号をクリア
+  if (lineCount === 1) { 
+    lineNumbers.innerHTML += `<span class="line-number">${lineCount}</span>`;
+  } else { 
+    for (let i = 0; i < lineCount - 1; i++) {
+      lineNumbers.innerHTML += `<span class="line-number">${i + 1}</span>`;
+    }
+  }
+}
+
+document.getElementById('editor').addEventListener('input', () => {
+  const editor = document.getElementById("editor");
+  const visualizedText = visualizeSpaces(editor.innerText);
+  editor.innerHTML = visualizedText;
+  updateLineNumbers();
+  placeCaretAtEnd(editor);
+});
+
+// 初期化
+updateLineNumbers();
