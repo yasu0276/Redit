@@ -1,0 +1,51 @@
+name: Tauri CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Node.jsをセットアップ
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    # Rustをセットアップ
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    # キャッシュを有効にする
+    - name: Cache node_modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    # 依存関係をインストール
+    - name: Install dependencies
+      run: npm install
+
+    # Tauriアプリをビルド
+    - name: Build Tauri app
+      run: npm run tauri build
+
+    # (任意) Tauriアプリをテスト
+    - name: Test Tauri app
+      run: npm run test
