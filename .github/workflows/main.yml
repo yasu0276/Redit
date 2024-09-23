@@ -23,32 +23,13 @@ jobs:
         profile: minimal
         override: true
 
-    # 必要であれば、Rust依存パッケージをキャッシュ
-    - name: Cache Cargo registry
-      uses: actions/cache@v3
-      with:
-        path: ~/.cargo/registry
-        key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
-
-    # 必要であれば、Cargoビルドアーティファクトをキャッシュ
-    - name: Cache Cargo build
-      uses: actions/cache@v3
-      with:
-        path: target
-        key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-build-
+    # GTK 3.0関連のライブラリをインストール
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev
 
     # TauriのCLIとcreate-tauri-appのインストール
     - name: Install Tauri CLI
       run: |
-        apt-get update -y --allow-releaseinfo-change
-        apt-get upgrade -y
-        apt-get autoremove -y
-        apt-get install curl
-        apt-get install -y libwebkit2gtk-4.0-dev build-essential wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
         cargo install create-tauri-app
         cargo install tauri-cli
 
