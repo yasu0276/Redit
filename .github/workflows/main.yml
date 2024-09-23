@@ -1,4 +1,4 @@
-name: Tauri CI
+name: Tauri CI with Cargo and Vanilla JS
 
 on:
   push:
@@ -15,12 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # Node.jsをセットアップ
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-
     # Rustをセットアップ
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
@@ -29,23 +23,34 @@ jobs:
         profile: minimal
         override: true
 
-    # キャッシュを有効にする
-    - name: Cache node_modules
+    # 必要であれば、Rust依存パッケージをキャッシュ
+    - name: Cache Cargo registry
       uses: actions/cache@v3
       with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
         restore-keys: |
-          ${{ runner.os }}-node-
+          ${{ runner.os }}-cargo-
 
-    # 依存関係をインストール
-    - name: Install dependencies
-      run: npm install
+    # 必要であれば、Cargoビルドアーティファクトをキャッシュ
+    - name: Cache Cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-build-
 
-    # Tauriアプリをビルド
+    # TauriのCLIとcreate-tauri-appのインストール
+    - name: Install Tauri CLI
+      run: |
+        cargo install create-tauri-app
+        cargo install tauri-cli
+
+    # Rust/Tauriアプリをビルド
     - name: Build Tauri app
-      run: npm run tauri build
+      run: cargo tauri build --release
 
-    # (任意) Tauriアプリをテスト
+    # (任意) アプリのテストを実行
     - name: Test Tauri app
-      run: npm run test
+      run: cargo test
