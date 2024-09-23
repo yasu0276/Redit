@@ -1,5 +1,8 @@
 # Redit
 
+## 概要
+Tauri で開発したテキストエディターです。「半角空白」、「全角空白」、「Tab」を必ず別の色で可視化して表示するようにしています。
+
 ## 環境構築
 
 [Rust 公式のページ](https://www.rust-lang.org/ja/tools/install)を参考に Rust をインストールしてください。
