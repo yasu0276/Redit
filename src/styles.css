@@ -92,19 +92,19 @@ button {
 }
 
 .half-width-space {
-  background-color: rgba(255, 255, 0, 0.2); /* 半角空白の色 */
+  background-color: rgba(255, 255, 0, 0.5); /* 半角空白の色 */
   display: inline-block; /* 行内要素として表示 */
   height: 1.5em; /* 行の高さに合わせる */
 }
 
 .full-width-space {
-  background-color: rgba(0, 255, 255, 0.2); /* 全角空白の色 */
+  background-color: rgba(0, 255, 255, 0.5); /* 全角空白の色 */
   display: inline-block; /* 行内要素として表示 */
   height: 1.5em; /* 行の高さに合わせる */
 }
 
 .tab {
-  background-color: rgba(255, 0, 255, 0.2); /* タブの色 */
+  background-color: rgba(255, 0, 0, 0.5); /* タブの色 */
   display: inline-block; /* 行内要素として表示 */
   height: 1.5em; /* 行の高さに合わせる */
 }
