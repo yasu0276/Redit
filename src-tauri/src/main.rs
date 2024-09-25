@@ -5,6 +5,13 @@ use std::path::PathBuf;
 
 // コマンドとして呼び出せる関数を定義
 #[tauri::command]
+fn line_count(content: String) -> usize {
+    let line_count = content.chars().filter(|&c| c == '\n').count() + 1;
+    return line_count;
+}
+
+// コマンドとして呼び出せる関数を定義
+#[tauri::command]
 fn open_file(path: String) -> Result<String, String> {
     // ファイルのパスが存在するかチェックし、読み込む
     let path = PathBuf::from(path);
@@ -29,7 +36,7 @@ fn save_file(path: String, content: String) -> Result<(), String> {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![open_file, save_file])
+        .invoke_handler(tauri::generate_handler![open_file, save_file, line_count])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
