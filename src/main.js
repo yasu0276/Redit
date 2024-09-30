@@ -71,11 +71,11 @@ async function saveFile() {
   }
 }
 
-// Ctrl + '=' を監視する
 document.addEventListener("keydown", (event) => {
   const editor = document.getElementById('editor');
   const lineNumbers = document.getElementById('line-numbers');
-  if ((event.ctrlKey || event.metaKey) && event.key === "=") {
+  // フォントの拡大
+  if ((event.ctrlKey || event.metaKey) && (event.key === "=" || event.key === "+")) {
     // 現在のフォントサイズを取得
     const style = window.getComputedStyle(editor);
     let fontSize = parseFloat(style.fontSize); // フォントサイズを数値に変換
@@ -84,12 +84,7 @@ document.addEventListener("keydown", (event) => {
     editor.style.fontSize = fontSize + "px";
     lineNumbers.style.fontSize = fontSize + "px";
   }
-});
-
-// Ctrl + '-' を監視する
-document.addEventListener("keydown", (event) => {
-  const editor = document.getElementById('editor');
-  const lineNumbers = document.getElementById('line-numbers');
+  // フォントの縮小
   if ((event.ctrlKey || event.metaKey) && event.key === "-") {
     // 現在のフォントサイズを取得
     const style = window.getComputedStyle(editor);
@@ -102,29 +97,15 @@ document.addEventListener("keydown", (event) => {
     editor.style.fontSize = fontSize + "px";
     lineNumbers.style.fontSize = fontSize + "px";
   }
-});
-
-// Ctrl + O を監視する
-document.addEventListener("keydown", (event) => {
+  // ファイルオープンのためのファイルダイアログを開く
   if ((event.ctrlKey || event.metaKey) && event.key === "o") {
     event.preventDefault(); // ブラウザのデフォルトの動作を防ぐ
     openFileDialog(); // ファイルを開く関数を呼び出す
   }
-});
-
-// Ctrl + S を監視する
-document.addEventListener("keydown", (event) => {
+  // ファイルセーブのためのファイルダイアログを開く
   if ((event.ctrlKey || event.metaKey) && event.key === "s") {
     event.preventDefault(); // ブラウザのデフォルトの保存を無効化
     saveFile(); // ファイル保存関数を呼び出す
-  }
-});
-
-// Ctrl + O を監視する
-document.addEventListener("keydown", (event) => {
-  if ((event.ctrlKey || event.metaKey) && event.key === "o") {
-    event.preventDefault(); // ブラウザのデフォルトの動作を防ぐ
-    openFileDialog(); // ファイルを開く関数を呼び出す
   }
 });
 
