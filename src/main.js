@@ -74,13 +74,11 @@ async function updateLineNumbers() {
     lineCount++;
   }
 
-  if (content.length > 0 && content[content.length - 1] !== '\n') {
-    lineCount++; // 最後に改行がない場合、行数を1つ増やす
-  }
+  console.log(lineCount);
 
   lineNumbers.innerHTML = ''; // 行番号をクリア
 
-  for (let i = 0; i < lineCount - 1; i++) {
+  for (let i = 0; i < lineCount; i++) {
     lineNumbers.innerHTML += `<span class="line-number">${i + 1}</span>`;
   }
 }
@@ -115,13 +113,11 @@ editor.addEventListener("compositionend", () => {
 editor.addEventListener('input', () => {
   // 変換処理中は何もしない
   if (isComposing == false) {
-    return;
+    const visualizedText = visualizeSpaces(editor.innerText);
+    editor.innerHTML = visualizedText;
+    updateLineNumbers();
+    placeCaretAtEnd();
   }
-  console.log(editor.innerText);
-  const visualizedText = visualizeSpaces(editor.innerText);
-  editor.innerHTML = visualizedText;
-  updateLineNumbers();
-  placeCaretAtEnd();
 });
 
 editor.addEventListener("keydown", (event) => {
