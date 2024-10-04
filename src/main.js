@@ -69,13 +69,6 @@ async function updateLineNumbers() {
   const lineNumbers = document.getElementById('line-numbers');
   let lineCount = await invoke("line_count", { content });
 
-  // 何も入力されていない場合は1行目を表示
-  if (content.length == 0) {
-    lineCount++;
-  }
-
-  console.log(lineCount);
-
   lineNumbers.innerHTML = ''; // 行番号をクリア
 
   for (let i = 0; i < lineCount; i++) {

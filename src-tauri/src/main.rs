@@ -6,12 +6,11 @@ use std::path::PathBuf;
 // コマンドとして呼び出せる関数を定義
 #[tauri::command]
 fn line_count(content: String) -> usize {
-
     let mut line_count = content.lines().count();
 
-    /* 末尾に改行がある場合は 1 行減らす */
-    if content.ends_with('\n') && line_count > 0 {
-        line_count -= 1;
+    /* 未入力時は 1 行目を表示するため特殊処理する */
+    if line_count == 0 { 
+        line_count += 1;
     }
 
     return line_count;
