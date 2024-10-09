@@ -148,6 +148,25 @@ editor.addEventListener("keydown", (event) => {
     event.preventDefault(); // ブラウザのデフォルトの保存を無効化
     saveFile(); // ファイル保存関数を呼び出す
   }
+  // Enter 入力動作を上書き
+  if (event.key === 'Enter') {
+    event.preventDefault(); // デフォルトのEnter動作を無効化
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+
+    // <br> タグを作成して挿入
+    const br = document.createElement('br');
+    range.insertNode(br);
+
+    // 改行後にカーソルを移動
+    range.setStartAfter(br);
+    range.setEndAfter(br);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    updateLineNumbers();
+    placeCaretAtEnd();
+  }
 });
 
 // 初期化
