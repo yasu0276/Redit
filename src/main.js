@@ -12,6 +12,12 @@ function visualizeSpaces(text) {
       .replace(/\t/g, '<span class="tab">→</span>'); // タブを矢印で可視化
 }
 
+function insertBr() {
+  if (editor.innerHTML === "" || editor.innerHTML === "<br>") {
+    // editor.innerHTML = "<br>"
+  }
+}
+
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
 tauri.event.listen("tauri://file-drop", (event) => {
   const paths = event.payload;
@@ -112,12 +118,10 @@ editor.addEventListener('input', () => {
 document.addEventListener('DOMContentLoaded', () => {
   // 初期化
   editor.focus();
-  editor.innerHTML = '<br>';
-  placeCaretAtEnd();
+  insertBr();
   updateLineNumbers();
+  placeCaretAtEnd();
 
-
-  const lineNumbers = document.getElementById('line-numbers');
   editor.addEventListener("keydown", (event) => {
     // フォントの拡大
     if ((event.ctrlKey || event.metaKey) && (event.key === "=" || event.key === "+")) {
@@ -129,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.style.fontSize = fontSize + "px";
       lineNumbers.style.fontSize = fontSize + "px";
     }
+
     // フォントの縮小
     if ((event.ctrlKey || event.metaKey) && event.key === "-") {
       // 現在のフォントサイズを取得
@@ -142,19 +147,24 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.style.fontSize = fontSize + "px";
       lineNumbers.style.fontSize = fontSize + "px";
     }
+
     // ファイルオープンのためのファイルダイアログを開く
     if ((event.ctrlKey || event.metaKey) && event.key === "o") {
       event.preventDefault(); // ブラウザのデフォルトの動作を防ぐ
       openFileDialog(); // ファイルを開く関数を呼び出す
     }
+
     // ファイルセーブのためのファイルダイアログを開く
     if ((event.ctrlKey || event.metaKey) && event.key === "s") {
       event.preventDefault(); // ブラウザのデフォルトの保存を無効化
       saveFile(); // ファイル保存関数を呼び出す
     }
+
     // Enter 入力動作を上書き
     if (event.key === 'Enter') {
       event.preventDefault();  // デフォルトの改行動作を抑制
+
+      insertBr();
 
       // 改行の挿入
       const selection = window.getSelection();
@@ -171,7 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
       selection.addRange(range);
 
       updateLineNumbers();
+      placeCaretAtEnd();
     }
+
+    if (event.key === "Backspace" || event.key === "Delete") {
+      // 削除処理完了を待つため setTimeout を 0 で設定
+      setTimeout(() => {
+        insertBr();
+        updateLineNumbers();
+        placeCaretAtEnd();
+      }, 0);
+    }
+
   });
 
 });
