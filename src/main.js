@@ -10,7 +10,8 @@ function visualizeSpaces(text) {
   return text
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
-      .replace(/\t/g, '<span class="tab">→</span>'); // タブを矢印で可視化
+      .replace(/\t/g, '<span class="tab">→</span>') // タブを矢印で可視化
+      .replace(/\n/g, '<br>');
 }
 
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
@@ -32,7 +33,6 @@ async function openFile(path) {
   const visualizedText = visualizeSpaces(content);
   editor.innerHTML = visualizedText;
   currentFilePath = path;  // ファイルを開いたらパスを記憶
-  updateLineNumbers();
 }
 
 async function openFileDialog() {
@@ -58,7 +58,7 @@ async function saveFile() {
   }
 }
 
-
+/*
 async function updateLineNumbers() {
   const content = editor.innerText;
   const lineNumbers = document.getElementById('line-numbers');
@@ -70,6 +70,7 @@ async function updateLineNumbers() {
     lineNumbers.innerHTML += `<span class="line-number">${i + 1}</span>`;
   }
 }
+*/
 
 // ドラッグイベント検知
 editor.addEventListener('dragover', (event) => {
@@ -88,6 +89,7 @@ editor.addEventListener("compositionend", () => {
   isComposing = false;
 });
 
+/*
 editor.addEventListener('input', () => {
   // 変換処理中は何もしない
   if (isComposing == false) {
@@ -96,14 +98,18 @@ editor.addEventListener('input', () => {
     updateLineNumbers();
   }
 });
+*/
 
 // ページロード時にテキストエリアにフォーカスを当てる
 document.addEventListener('DOMContentLoaded', () => {
   // 初期化
   editor.focus();
-  updateLineNumbers();
 
   editor.addEventListener("keydown", (event) => {
+    const visualizedText = visualizeSpaces(editor.value);
+    highlighted.innerHTML = visualizedText;
+    console.log(visualizedText);
+
     // フォントの拡大
     if ((event.ctrlKey || event.metaKey) && (event.key === "=" || event.key === "+")) {
       // 現在のフォントサイズを取得
@@ -139,6 +145,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((event.ctrlKey || event.metaKey) && event.key === "s") {
       event.preventDefault(); // ブラウザのデフォルトの保存を無効化
       saveFile(); // ファイル保存関数を呼び出す
+    }
+
+    if (event.key === 'Tab') {
+      event.preventDefault();  // タブキーのデフォルト動作を無効化
+
+      // カーソル位置の取得
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+
+      // テキストにタブ文字を挿入
+      editor.value = editor.value.substring(0, start) + '\t' + editor.value.substring(end);
+
+      // カーソル位置をタブの後ろに移動
+      editor.selectionStart = editor.selectionEnd = start + 1;
+      const visualizedText = visualizeSpaces(editor.value);
+      highlighted.innerHTML = visualizedText;
     }
     /*
     // Enter 入力動作を上書き
