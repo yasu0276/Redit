@@ -1,7 +1,8 @@
 // Tauri の invoke 関数を使用して Rust コマンドを呼び出します
 const { invoke } = window.__TAURI__.tauri;
 const tauri = window.__TAURI__;
-const editor = document.querySelector('.editor'); // editor のオブジェクト
+const editor = document.getElementById('editor'); // editor のオブジェクト
+const highlighted = document.getElementById('highlighted'); // editor のオブジェクト
 let currentFilePath = null;  // 保存されたファイルパスを保持する変数
 let isComposing = false;
 
@@ -10,12 +11,6 @@ function visualizeSpaces(text) {
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
       .replace(/\t/g, '<span class="tab">→</span>'); // タブを矢印で可視化
-}
-
-function insertBr() {
-  if (editor.innerHTML === "" || editor.innerHTML === "<br>") {
-    // editor.innerHTML = "<br>"
-  }
 }
 
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
@@ -38,7 +33,6 @@ async function openFile(path) {
   editor.innerHTML = visualizedText;
   currentFilePath = path;  // ファイルを開いたらパスを記憶
   updateLineNumbers();
-  placeCaretAtEnd();
 }
 
 async function openFileDialog() {
@@ -77,16 +71,6 @@ async function updateLineNumbers() {
   }
 }
 
-function placeCaretAtEnd() {
-  editor.focus();
-  const range = document.createRange();
-  range.selectNodeContents(editor);
-  range.collapse(false);
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
-}
-
 // ドラッグイベント検知
 editor.addEventListener('dragover', (event) => {
   event.preventDefault(); // デフォルトの挙動を防ぐ
@@ -107,10 +91,9 @@ editor.addEventListener("compositionend", () => {
 editor.addEventListener('input', () => {
   // 変換処理中は何もしない
   if (isComposing == false) {
-    const visualizedText = visualizeSpaces(editor.innerText);
-    editor.innerHTML = visualizedText;
+    const visualizedText = visualizeSpaces(editor.value);
+    highlighted.innerHTML = visualizedText;
     updateLineNumbers();
-    placeCaretAtEnd();
   }
 });
 
@@ -118,9 +101,7 @@ editor.addEventListener('input', () => {
 document.addEventListener('DOMContentLoaded', () => {
   // 初期化
   editor.focus();
-  insertBr();
   updateLineNumbers();
-  placeCaretAtEnd();
 
   editor.addEventListener("keydown", (event) => {
     // フォントの拡大
@@ -159,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault(); // ブラウザのデフォルトの保存を無効化
       saveFile(); // ファイル保存関数を呼び出す
     }
-
+    /*
     // Enter 入力動作を上書き
     if (event.key === 'Enter') {
       event.preventDefault();  // デフォルトの改行動作を抑制
@@ -192,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         placeCaretAtEnd();
       }, 0);
     }
-
+    */
   });
 
 });
