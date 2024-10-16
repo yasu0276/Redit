@@ -88,16 +88,9 @@ editor.addEventListener("compositionend", () => {
 });
 
 editor.addEventListener('input', () => {
-  // 変換処理中は何もしない
-  /*
-  if (isComposing == false) {
-    const visualizedText = visualizeSpaces(editor.value);
-    highlighted.innerHTML = visualizedText;
-    updateLineNumbers();
-  }
-  */
   const visualizedText = visualizeSpaces(editor.value);
   highlighted.innerHTML = visualizedText;
+  updateLineNumbers();
 });
 
 // ページロード時にテキストエリアにフォーカスを当てる
@@ -196,3 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+// 初期化時に行番号を生成
+updateLineNumbers();

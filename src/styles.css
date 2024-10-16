@@ -121,12 +121,17 @@ button {
   line-height: 1.5;     /* 行間を設定 */
   font-size: 16px;      /* フォントサイズを設定 */
   text-align: center;   /* 中央揃え */
+  background-color: #2f2f2f;   /* 背景色を黒に */
+  color: #f6f6f6;              /* 文字色を白に */
+  z-index: 4;                    /* highlighted を前面に表示 */
 }
 
-.line-number {
+.line-numbers {
   display: block;
-  height: 1.5em; /* 行の高さに合わせる */
-  color: gray; /* 行番号の色 */
+  height: 1.5;          /* 行の高さに合わせる */
+  background-color: #2f2f2f;   /* 背景色を黒に */
+  color: #f6f6f6;              /* 文字色を白に */
+  z-index: 3;                    /* highlighted を前面に表示 */
 }
 
 .editor-dragging {
