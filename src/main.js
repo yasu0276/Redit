@@ -58,9 +58,8 @@ async function saveFile() {
   }
 }
 
-/*
 async function updateLineNumbers() {
-  const content = editor.innerText;
+  const content = editor.value;
   const lineNumbers = document.getElementById('line-numbers');
   let lineCount = await invoke("line_count", { content });
 
@@ -70,7 +69,6 @@ async function updateLineNumbers() {
     lineNumbers.innerHTML += `<span class="line-number">${i + 1}</span>`;
   }
 }
-*/
 
 // ドラッグイベント検知
 editor.addEventListener('dragover', (event) => {
@@ -89,16 +87,18 @@ editor.addEventListener("compositionend", () => {
   isComposing = false;
 });
 
-/*
 editor.addEventListener('input', () => {
   // 変換処理中は何もしない
+  /*
   if (isComposing == false) {
     const visualizedText = visualizeSpaces(editor.value);
     highlighted.innerHTML = visualizedText;
     updateLineNumbers();
   }
+  */
+  const visualizedText = visualizeSpaces(editor.value);
+  highlighted.innerHTML = visualizedText;
 });
-*/
 
 // ページロード時にテキストエリアにフォーカスを当てる
 document.addEventListener('DOMContentLoaded', () => {
@@ -106,9 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
   editor.focus();
 
   editor.addEventListener("keydown", (event) => {
-    const visualizedText = visualizeSpaces(editor.value);
-    highlighted.innerHTML = visualizedText;
-    console.log(visualizedText);
 
     // フォントの拡大
     if ((event.ctrlKey || event.metaKey) && (event.key === "=" || event.key === "+")) {
