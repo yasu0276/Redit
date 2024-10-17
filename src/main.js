@@ -7,17 +7,18 @@ let currentFilePath = null;  // 保存されたファイルパスを保持する
 let isComposing = false;
 
 function visualizeSpaces(text) {
+  /* 改行コードを統一 */
+  text = text.replace(/\r\n/g, '\n');
   return text
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
       .replace(/\t/g, '<span class="tab">→</span>') // タブを矢印で可視化
-      .replace(/\n/g, '<br>');
+      .replace(/\n/g, '<span class="eon">←</span><br>') // タブを矢印で可視化
 }
 
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
 tauri.event.listen("tauri://file-drop", (event) => {
   const paths = event.payload;
-  const editor = document.getElementById("editor");
   if (paths) {
     openFile(paths[0]);
   }
@@ -31,7 +32,7 @@ tauri.event.listen("tauri://file-drop", (event) => {
 async function openFile(path) {
   const content = await invoke("open_file", { path });
   const visualizedText = visualizeSpaces(content);
-  editor.innerHTML = visualizedText;
+  highlighted.innerHTML = visualizedText;
   currentFilePath = path;  // ファイルを開いたらパスを記憶
 }
 
@@ -58,18 +59,6 @@ async function saveFile() {
   }
 }
 
-async function updateLineNumbers() {
-  const content = editor.value;
-  const lineNumbers = document.getElementById('line-numbers');
-  let lineCount = await invoke("line_count", { content });
-
-  lineNumbers.innerHTML = ''; // 行番号をクリア
-
-  for (let i = 0; i < lineCount; i++) {
-    lineNumbers.innerHTML += `<span class="line-number">${i + 1}</span>`;
-  }
-}
-
 // ドラッグイベント検知
 editor.addEventListener('dragover', (event) => {
   event.preventDefault(); // デフォルトの挙動を防ぐ
@@ -79,18 +68,9 @@ editor.addEventListener('dragover', (event) => {
   });
 });
 
-editor.addEventListener("compositionstart", () => {
-  isComposing = true;
-});
-
-editor.addEventListener("compositionend", () => {
-  isComposing = false;
-});
-
 editor.addEventListener('input', () => {
   const visualizedText = visualizeSpaces(editor.value);
   highlighted.innerHTML = visualizedText;
-  updateLineNumbers();
 });
 
 // ページロード時にテキストエリアにフォーカスを当てる
@@ -152,43 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const visualizedText = visualizeSpaces(editor.value);
       highlighted.innerHTML = visualizedText;
     }
-    /*
-    // Enter 入力動作を上書き
-    if (event.key === 'Enter') {
-      event.preventDefault();  // デフォルトの改行動作を抑制
-
-      insertBr();
-
-      // 改行の挿入
-      const selection = window.getSelection();
-      const range = selection.getRangeAt(0);
-
-      const br = document.createElement('br');
-      range.deleteContents();  // 現在の選択を削除（もしあれば）
-      range.insertNode(br);  // 改行を挿入
-
-      // 改行後にカーソルをその次の位置に移動させる
-      range.setStartAfter(br);
-      range.setEndAfter(br);
-      selection.removeAllRanges();
-      selection.addRange(range);
-
-      updateLineNumbers();
-      placeCaretAtEnd();
-    }
-
-    if (event.key === "Backspace" || event.key === "Delete") {
-      // 削除処理完了を待つため setTimeout を 0 で設定
-      setTimeout(() => {
-        insertBr();
-        updateLineNumbers();
-        placeCaretAtEnd();
-      }, 0);
-    }
-    */
   });
 
 });
-
-// 初期化時に行番号を生成
-updateLineNumbers();
