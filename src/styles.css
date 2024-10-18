@@ -17,6 +17,12 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.bom {
+  background-color: #f6f6f6;              /* 文字色を白に */
+  display: inline-block; /* 行内要素として表示 */
+  height: 1.5em; /* 行の高さに合わせる */
+}
+
 .half-width-space {
   background-color: rgba(255, 255, 0, 0.5); /* 半角空白の色 */
   display: inline-block; /* 行内要素として表示 */

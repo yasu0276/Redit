@@ -7,13 +7,29 @@ let currentFilePath = null;  // 保存されたファイルパスを保持する
 let isComposing = false;
 
 function visualizeSpaces(text) {
+  const hasBOM = text.charCodeAt(0) === 0xFEFF;
+
+  if (hasBOM) {
+    text = text.substring(1);
+  }
+
   /* 改行コードを統一 */
   text = text.replace(/\r\n/g, '\n');
-  return text
+
+  /* 空白、改行を可視化 */
+  let html = text
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
       .replace(/\t/g, '<span class="tab">→</span>') // タブを矢印で可視化
       .replace(/\n/g, '<span class="eon">←</span><br>') // タブを矢印で可視化
+
+
+  /* BOM を可視化 */
+  if (hasBOM){
+    html = '<span class="bom">BOM</span>' + html;
+  }
+
+  return html;
 }
 
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
@@ -25,14 +41,15 @@ tauri.event.listen("tauri://file-drop", (event) => {
   requestAnimationFrame(() => {
     // ドロップ後に描画更新
     editor.style.cursor = 'text'; // 通常のカーソルに戻す
+    highlighted.style.cursor = 'text'; // 通常のカーソルに戻す
   });
 });
 
 // 非同期ファイルオープン処理を呼び出す
 async function openFile(path) {
   const content = await invoke("open_file", { path });
-  const visualizedText = visualizeSpaces(content);
-  highlighted.innerHTML = visualizedText;
+  editor.value = content;
+  highlighted.innerHTML = visualizeSpaces(editor.value);
   currentFilePath = path;  // ファイルを開いたらパスを記憶
 }
 
@@ -65,6 +82,7 @@ editor.addEventListener('dragover', (event) => {
   requestAnimationFrame(() => {
     // 次のフレームで画面を更新
     editor.style.cursor = 'move'; // カーソルをドラッグ中の状態に変更
+    highlighted.style.cursor = 'move'; // カーソルをドラッグ中の状態に変更
   });
 });
 
@@ -88,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault(); // ブラウザのデフォルトの保存を無効化
       fontSize += 1; // フォントサイズを変更
       editor.style.fontSize = fontSize + "px";
-      lineNumbers.style.fontSize = fontSize + "px";
+      highlighted.style.fontSize = fontSize + "px";
     }
 
     // フォントの縮小
@@ -102,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fontSize = 5;
       }
       editor.style.fontSize = fontSize + "px";
-      lineNumbers.style.fontSize = fontSize + "px";
+      highlighted.style.fontSize = fontSize + "px";
     }
 
     // ファイルオープンのためのファイルダイアログを開く
