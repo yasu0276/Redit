@@ -1,6 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use std::fs;
+use memmap2::Mmap;
+use std::fs::File;
 use std::path::PathBuf;
 
 // コマンドとして呼び出せる関数を定義
@@ -9,7 +11,7 @@ fn line_count(content: String) -> usize {
     let mut line_count = content.lines().count();
 
     /* 未入力時は 1 行目を表示するため特殊処理する */
-    if line_count == 0 { 
+    if line_count == 0 {
         line_count += 1;
     }
 
@@ -19,13 +21,18 @@ fn line_count(content: String) -> usize {
 // コマンドとして呼び出せる関数を定義
 #[tauri::command]
 fn open_file(path: String) -> Result<String, String> {
-    // ファイルのパスが存在するかチェックし、読み込む
     let path = PathBuf::from(path);
     if path.exists() {
-        match fs::read_to_string(path) {
-            Ok(content) => Ok(content),
-            Err(err) => Err(format!("Failed to read file: {}", err)),
-        }
+        // ファイルを開く
+        let file = File::open(&path).map_err(|err| format!("Failed to open file: {}", err))?;
+
+        // メモリマップを作成
+        let mmap = unsafe { Mmap::map(&file) }.map_err(|err| format!("Failed to map file: {}", err))?;
+
+        // マップされた内容を文字列に変換
+        let content = String::from_utf8_lossy(&mmap);
+
+        Ok(content.to_string())
     } else {
         Err("File does not exist.".to_string())
     }

@@ -32,6 +32,12 @@ function visualizeSpaces(text) {
   return html;
 }
 
+function updateText(content) {
+  editor.value = content;
+  highlighted.innerHTML = visualizeSpaces(editor.value);
+  editor.focus();  // テキストエリアにフォーカス
+}
+
 // Rust 側のドロップイベント検知 ( 本来は javascript 側を使うべきだが Rust 側でないとイベント検知不可のため )
 tauri.event.listen("tauri://file-drop", (event) => {
   const paths = event.payload;
@@ -45,11 +51,15 @@ tauri.event.listen("tauri://file-drop", (event) => {
   });
 });
 
+editor.addEventListener('scroll', function() {
+  highlighted.scrollTop = editor.scrollTop;  // 縦スクロールの同期
+  highlighted.scrollLeft = editor.scrollLeft;  // 横スクロールの同期
+});
+
 // 非同期ファイルオープン処理を呼び出す
 async function openFile(path) {
   const content = await invoke("open_file", { path });
-  editor.value = content;
-  highlighted.innerHTML = visualizeSpaces(editor.value);
+  updateText(content);
   currentFilePath = path;  // ファイルを開いたらパスを記憶
 }
 
@@ -87,8 +97,7 @@ editor.addEventListener('dragover', (event) => {
 });
 
 editor.addEventListener('input', () => {
-  const visualizedText = visualizeSpaces(editor.value);
-  highlighted.innerHTML = visualizedText;
+  updateText(editor.value);
 });
 
 // ページロード時にテキストエリアにフォーカスを当てる
@@ -147,8 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // カーソル位置をタブの後ろに移動
       editor.selectionStart = editor.selectionEnd = start + 1;
-      const visualizedText = visualizeSpaces(editor.value);
-      highlighted.innerHTML = visualizedText;
+      updateText(editor.value);
     }
   });
 
