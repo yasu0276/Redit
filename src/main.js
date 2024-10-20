@@ -18,10 +18,15 @@ function visualizeSpaces(text) {
 
   /* 空白、改行を可視化 */
   let html = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
       .replace(/\t/g, '<span class="tab">→</span>') // タブを矢印で可視化
-      .replace(/\n/g, '<span class="eon">←</span><br>') // タブを矢印で可視化
+      .replace(/\n/g, '<span class="eon">←</span><br>'); // タブを矢印で可視化
 
 
   /* BOM を可視化 */
@@ -158,6 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.selectionStart = editor.selectionEnd = start + 1;
       updateText(editor.value);
     }
+
   });
 
 });
+
+
+// 初期化時に一度同期
+updateText(editor.value);
