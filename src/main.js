@@ -6,10 +6,17 @@ const highlighted = document.getElementById('highlighted'); // editor のオブ�
 let currentFilePath = null;  // 保存されたファイルパスを保持する変数
 let isComposing = false;
 
-function visualizeSpaces(text) {
-  const hasBOM = text.charCodeAt(0) === 0xFEFF;
+function replaceBOM(text) {
+  const BOM_REPLACEMENT = '\uFFF9';
+  text = text.replace(/\uFEFF/g, BOM_REPLACEMENT); // BOM を U+FFF9 に置き換え
+  return text;
+}
 
-  if (hasBOM) {
+function visualizeSpaces(text) {
+  let bomCount = 0;
+
+  while (text.charCodeAt(0) === 0xFEFF) {
+    bomCount++;
     text = text.substring(1);
   }
 
@@ -25,20 +32,24 @@ function visualizeSpaces(text) {
       .replace(/'/g, "&#039;")
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
-      .replace(/\t/g, '<span class="tab">→</span>') // タブを矢印で可視化
-      .replace(/\n/g, '<span class="eon">←</span><br>'); // タブを矢印で可視化
-
+      .replace(/\t/g, '<span class="tab"> </span>')     // タブを可視化
+      .replace(/\n/g, '<span class="eon"> </span><br>') // タブを可視化
+      .replace(/\uFFF9/g, '<span class="bom"> </span>'); // BOM を可視化
 
   /* BOM を可視化 */
-  if (hasBOM){
-    html = '<span class="bom">BOM</span>' + html;
+  if (bomCount > 0) {
+    let bomHtml = '';
+    for (let i = 0; i < bomCount; i++) {
+      bomHtml = '<span class="bom"> </span>';
+    }
+    html = bomHtml + html;
   }
 
   return html;
 }
 
 function updateText(content) {
-  editor.value = content;
+  editor.value = replaceBOM(content);
   highlighted.innerHTML = visualizeSpaces(editor.value);
   editor.focus();  // テキストエリアにフォーカス
 }
