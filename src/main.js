@@ -32,7 +32,7 @@ function visualizeSpaces(text) {
       .replace(/'/g, "&#039;")
       .replace(/ /g, '<span class="half-width-space"> </span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
-      .replace(/\t/g, '<span class="tab"> </span>')     // タブを可視化
+      .replace(/\t/g, '<span class="tab">    </span>')  // タブを可視化
       .replace(/\n/g, '<span class="eon"> </span><br>') // タブを可視化
       .replace(/\uFFF9/g, '<span class="bom"> </span>'); // BOM を可視化
 
@@ -120,6 +120,15 @@ editor.addEventListener('input', () => {
 document.addEventListener('DOMContentLoaded', () => {
   // 初期化
   editor.focus();
+
+  // macOS 検出
+  if (navigator.userAgent.includes("Mac OS")) {
+      document.body.classList.add("macos");
+  }
+  // windows 検出
+  if (navigator.userAgent.includes("Windows")) {
+    document.body.classList.add("windows");
+  }
 
   editor.addEventListener("keydown", (event) => {
 

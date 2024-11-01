@@ -26,6 +26,9 @@
   background-color: rgba(255, 255, 0, 0.2); /* 半角空白の色 */
   display: inline-block;                      /* 行内要素として表示 */
   height: 1.5em;                              /* 行の高さに合わせる */
+}
+
+.windows .half-width-space {
   width: 0.5em;                               /* 半角空白と一致させる */
 }
 
@@ -33,6 +36,9 @@
   background-color: rgba(0, 0, 255, 0.2); /* 全角空白の色 */
   display: inline-block;                    /* 行内要素として表示 */
   height: 1.5em;                            /* 行の高さに合わせる */
+}
+
+.windows .full-width-space {
   width: 1em;                               /* 全角空白と一致させる */
 }
 
@@ -40,7 +46,14 @@
   background-color: rgba(255, 0, 0, 0.2); /* タブの色 */
   display: inline-block;                    /* 行内要素として表示 */
   height: 1.5em;                            /* 行の高さに合わせる */
+}
+
+.windows .tab {
   width: 4.0em;                               /* タブの幅を指定（4スペース分 4em） */
+}
+
+.macos .tab {
+  width: 5.0em;                               /* タブの幅を指定（4スペース分 4em） */
 }
 
 .eon {
