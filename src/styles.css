@@ -52,10 +52,6 @@
   width: 4.0em;                               /* タブの幅を指定（4スペース分 4em） */
 }
 
-.macos .tab {
-  width: 5.0em;                               /* タブの幅を指定（4スペース分 4em） */
-}
-
 .eon {
   background-color: rgba(0, 255, 0, 0.2); /* 改行の色 */
   display: inline-block;                    /* 行内要素として表示 */
@@ -84,6 +80,7 @@
   white-space: pre-wrap;         /* テキストの折り返し処理を指定 */
   cursor: text;                  /* テキスト入力エリアのデフォルト */
   outline: none;                 /* フォーカスリングを非表示にする */
+  tab-size: 4;                   /* タブ幅を 4 文字分に設定 */
 }
 
 #highlighted {

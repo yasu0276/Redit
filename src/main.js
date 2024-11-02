@@ -30,9 +30,9 @@ function visualizeSpaces(text) {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;")
-      .replace(/ /g, '<span class="half-width-space"> </span>')
+      .replace(/ /g, '<span class="half-width-space">&nbsp;</span>')
       .replace(/　/g, '<span class="full-width-space">　</span>')
-      .replace(/\t/g, '<span class="tab">    </span>')  // タブを可視化
+      .replace(/\t/g, '<span class="tab">&nbsp;&nbsp;&nbsp;&nbsp;</span>')  // タブを可視化
       .replace(/\n/g, '<span class="eon"> </span><br>') // タブを可視化
       .replace(/\uFFF9/g, '<span class="bom"> </span>'); // BOM を可視化
 
