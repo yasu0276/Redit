@@ -168,22 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault(); // ブラウザのデフォルトの保存を無効化
       saveFile(); // ファイル保存関数を呼び出す
     }
-
     if (event.key === 'Tab') {
       event.preventDefault();  // タブキーのデフォルト動作を無効化
 
-      // カーソル位置の取得
+      // カーソルの現在位置と選択範囲を取得
       const start = editor.selectionStart;
       const end = editor.selectionEnd;
 
-      // テキストにタブ文字を挿入
-      editor.value = editor.value.substring(0, start) + '\t' + editor.value.substring(end);
+      // 4 つの空白文字
+      const spaces = "    ";
 
-      // カーソル位置をタブの後ろに移動
-      editor.selectionStart = editor.selectionEnd = start + 1;
+      // テキストを取得して、カーソル位置で空白を挿入
+      editor.value = editor.value.slice(0, start) + spaces + editor.value.slice(end);
+
+      // カーソル位置を 4 つの空白の後ろに移動
+      editor.selectionStart = editor.selectionEnd = start + spaces.length;
       updateText(editor.value);
     }
-
   });
 
 });
