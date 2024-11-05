@@ -1,3 +1,7 @@
+html, body {
+  overflow: hidden; /* スクロールバーを非表示に */
+}
+
 .bom {
   background-color: rgba(255, 255, 255, 0.2);   /* 文字色を白に */
   display: inline-block;                          /* 行内要素として表示 */
@@ -71,11 +75,13 @@
 }
 
 #highlighted {
+  overflow: hidden;              /* スクロールバーを非表示 */
   caret-color: white;          /* カーソルの色を白にする */
   z-index: 1;                    /* highlighted を前面に表示 */
 }
 
 #editor {
+  resize: none;                 /* サイズ変更を無効化 */
   background: none;          /* 背景色を削除して透明にする */
   color: transparent;        /* テキスト自体は透明 */
   caret-color: white;      /* カーソルの色を白にする */
