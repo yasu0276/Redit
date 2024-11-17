@@ -4,7 +4,8 @@
 Tauri で開発したテキストエディターです。「半角空白」、「全角空白」、「Tab」を必ず別の色で可視化して表示するようにしています。
 
 ## 動作デモ
-![demo](https://github.com/user-attachments/assets/abc6f26f-cf91-4bb2-817f-2e438558d5a0)
+https://github.com/user-attachments/assets/16dd47c6-7ade-4f9a-a4df-889c85152360
+
 
 
 ## 環境構築
