@@ -3,6 +3,11 @@
 ## 概要
 Tauri で開発したテキストエディターです。「半角空白」、「全角空白」、「Tab」を必ず別の色で可視化して表示するようにしています。
 
+## 動作デモ
+https://github.com/user-attachments/assets/16dd47c6-7ade-4f9a-a4df-889c85152360
+
+
+
 ## 環境構築
 
 [Rust 公式のページ](https://www.rust-lang.org/ja/tools/install)を参考に Rust をインストールしてください。
