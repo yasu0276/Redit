@@ -19,7 +19,8 @@ rustup update
 次に以下のコマンドを実行して Tauri の開発環境に必要なものをインストールしてください。
 
 ```
-cargo install create-tauri-app && cargo install tauri-cli
+cargo install create-tauri-app --locked
+cargo create-tauri-app
 ```
 
 ビルド、実行の際は以下のコマンドを実行してください。
