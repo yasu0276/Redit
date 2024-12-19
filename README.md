@@ -20,7 +20,7 @@ rustup update
 
 ```
 cargo install create-tauri-app --locked
-cargo create-tauri-app
+cargo install tauri-cli
 ```
 
 ビルド、実行の際は以下のコマンドを実行してください。
