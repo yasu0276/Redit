@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "test",
-  "version": "0.1.0",
-  "identifier": "test",
+  "productName": "Redit",
+  "version": "1.4.0",
+  "identifier": "redit",
   "build": {
     "frontendDist": "../src"
   },
