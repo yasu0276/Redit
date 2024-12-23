@@ -1,5 +1,5 @@
-// Tauri の invoke 関数を使用して Rust コマンドを呼び出します
-const { invoke } = window.__TAURI__.tauri;
+const { invoke } = window.__TAURI__.core;
+
 const tauri = window.__TAURI__;
 const editor = document.getElementById('editor'); // editor のオブジェクト
 const highlighted = document.getElementById('highlighted'); // editor のオブジェクト
